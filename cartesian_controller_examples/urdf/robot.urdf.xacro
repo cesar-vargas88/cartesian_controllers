@@ -224,6 +224,7 @@
                 <parent link="link6"/>
                 <child link="tool0"/>
         </joint>
+        
         <link name="tool0">
                 <visual>
                         <origin xyz="0 0 0" rpy="0 0 0" />
