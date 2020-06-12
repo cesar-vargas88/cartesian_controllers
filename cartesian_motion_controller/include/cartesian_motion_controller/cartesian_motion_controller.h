@@ -112,6 +112,11 @@ class CartesianMotionController : public virtual cartesian_controller_base::Cart
     std::string     m_target_frame_topic;
     KDL::Frame      m_target_frame;
     KDL::Frame      m_current_frame;
+    std::string     m_ns;
+
+    // Franka
+    franka_msgs::FrankaState m_frankaState;
+    ros::Publisher m_frankaState_publisher;
 };
 
 }

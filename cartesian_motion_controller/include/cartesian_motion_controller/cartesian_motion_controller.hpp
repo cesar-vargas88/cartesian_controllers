@@ -62,9 +62,12 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
 {
   Base::init(hw,nh);
 
+  // Get namespace
+  m_ns = nh.getNamespace().substr(0, nh.getNamespace().find("/", 2));
+
   if (!nh.getParam("target_frame_topic",m_target_frame_topic))
   {
-    m_target_frame_topic = "target_frame";
+    m_target_frame_topic = "robot_goal";
     ROS_WARN_STREAM("Failed to load "
         << nh.getNamespace() + "/target_frame_topic"
         << " from parameter server. Will default to: "
@@ -72,10 +75,13 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
   }
 
   m_target_frame_subscr = nh.subscribe(
-      m_target_frame_topic,
+      m_ns+"/"+m_target_frame_topic,
       3,
       &CartesianMotionController<HardwareInterface>::targetFrameCallback,
       this);
+
+  // FrankaState Publishers 
+  m_frankaState_publisher = nh.advertise<franka_msgs::FrankaState>(m_ns + "/franka_state_controller/franka_states",10);
 
   return true;
 }
@@ -102,6 +108,48 @@ template <class HardwareInterface>
 void CartesianMotionController<HardwareInterface>::
 update(const ros::Time& time, const ros::Duration& period)
 {
+  // X   Y   Z   Translation
+  // m0  m4  m8  m12
+  // m1  m5  m9  m13
+  // m2  m6  m10 m14 
+  // m3  m7  m11 m15
+  
+  //////////////////////////////////////////////////////////////////  
+  //  Update O_T_EE : Measured end effector pose in base frame.   //
+  //  Pose is represented as a 4x4 matrix in column-major format. //
+  //////////////////////////////////////////////////////////////////
+  
+  // get End Effector pose
+  m_current_frame = Base::m_forward_dynamics_solver.getEndEffectorPose();
+  
+  // update position
+  m_frankaState.O_T_EE[12] = m_current_frame.p.x();
+  m_frankaState.O_T_EE[13] = m_current_frame.p.y();
+  m_frankaState.O_T_EE[14] = m_current_frame.p.z();
+
+  //////////////////////////////////////////////////////////////////  
+  //  Update F_T_EE : End effector frame pose in flange frame.    //
+  //  Pose is represented as a 4x4 matrix in column-major format. //
+  //////////////////////////////////////////////////////////////////
+  
+  // update position
+  m_frankaState.F_T_EE[12] =  1.000;
+  m_frankaState.F_T_EE[13] =  2.000;
+  m_frankaState.F_T_EE[14] =  3.000;
+
+  //////////////////////////////////////////////////////////////////  
+  //  Update EE_T_K : Stiffness frame pose in end effector frame. //
+  //  Pose is represented as a 4x4 matrix in column-major format. //
+  //////////////////////////////////////////////////////////////////
+  
+  // update position
+  m_frankaState.EE_T_K[12] =  1.000;
+  m_frankaState.EE_T_K[13] =  2.000;
+  m_frankaState.EE_T_K[14] =  3.000;
+
+  // frankaState publisher
+  m_frankaState_publisher.publish(m_frankaState);
+
   // Forward Dynamics turns the search for the according joint motion into a
   // control process. So, we control the internal model until we meet the
   // Cartesian target motion. This internal control needs some simulation time
@@ -121,6 +169,7 @@ update(const ros::Time& time, const ros::Duration& period)
 
   // Write final commands to the hardware interface
   Base::writeJointControlCmds();
+
 }
 
 template <>

@@ -65,6 +65,9 @@
 #include <vector>
 #include <string>
 
+// Franka
+#include <franka_msgs/FrankaState.h>
+
 namespace cartesian_controller_base
 {
 
@@ -151,6 +154,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
     ForwardDynamicsSolver   m_forward_dynamics_solver;
     std::string             m_end_effector_link;
     std::string             m_robot_base_link;
+    std::string             m_ns;
 
     bool m_paused;
     int m_iterations;
@@ -159,7 +163,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
     std::vector<hardware_interface::JointHandle>      m_joint_handles;
     std::vector<std::string>                          m_joint_names;
     trajectory_msgs::JointTrajectoryPoint             m_simulated_joint_motion;
-    SpatialPDController                              m_spatial_controller;
+    SpatialPDController                               m_spatial_controller;
     ctrl::Vector6D                                    m_cartesian_input;
     double m_error_scale;
 
@@ -173,6 +177,7 @@ class CartesianControllerBase : public controller_interface::Controller<Hardware
 
     boost::shared_ptr<dynamic_reconfigure::Server<ControllerConfig> > m_dyn_conf_server;
     dynamic_reconfigure::Server<ControllerConfig>::CallbackType m_callback_type;
+
 };
 
 }

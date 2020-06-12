@@ -68,6 +68,16 @@ void MotionControlHandle<HardwareInterface>::
 starting(const ros::Time& time)
 {
   m_current_pose = getEndEffectorPose();
+
+  // Pose
+  m_current_pose.pose.position.x = 0.350;
+  m_current_pose.pose.position.y = 0;
+  m_current_pose.pose.position.z = 0.600;
+  m_current_pose.pose.orientation.x =-0.707; 
+  m_current_pose.pose.orientation.y = 0.000; 
+  m_current_pose.pose.orientation.z = 0.000; 
+  m_current_pose.pose.orientation.w = 0.707;
+
   m_server->setPose(m_marker.name,m_current_pose.pose);
   m_server->applyChanges();
 }
@@ -94,13 +104,17 @@ template <class HardwareInterface>
 bool MotionControlHandle<HardwareInterface>::
 init(HardwareInterface* hw, ros::NodeHandle& nh)
 {
+
   std::string robot_description;
   urdf::Model robot_model;
   KDL::Tree   robot_tree;
   KDL::Chain  robot_chain;
 
+  // Get namespace
+  m_ns = nh.getNamespace().substr(0, nh.getNamespace().find("/", 2));
+
   // Get configuration from parameter server
-  if (!nh.getParam("/robot_description",robot_description))
+  if (!nh.getParam(m_ns+"/robot_description",robot_description))
   {
     ROS_ERROR("Failed to load '/robot_description' from parameter server");
     return false;
