@@ -80,8 +80,16 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
       &CartesianMotionController<HardwareInterface>::targetFrameCallback,
       this);
 
-  // FrankaState Publishers 
+  // FrankaState Publisher 
   m_frankaState_publisher = nh.advertise<franka_msgs::FrankaState>(m_ns + "/franka_state_controller/franka_states",10);
+  // jointState Publisher 
+  m_jointStates_publisher = nh.advertise<sensor_msgs::JointState>(m_ns + "/franka_state_controller/joint_states",10);
+  // jointState Subscriber
+  m_jointStates_subscriber = nh.subscribe(
+      m_ns+"/joint_states",
+      3,
+      &CartesianMotionController<HardwareInterface>::jointStatesCallback,
+      this);
 
   return true;
 }
@@ -109,9 +117,9 @@ void CartesianMotionController<HardwareInterface>::
 update(const ros::Time& time, const ros::Duration& period)
 {
   // X   Y   Z   Translation
-  // m0  m4  m8  m12
-  // m1  m5  m9  m13
-  // m2  m6  m10 m14 
+  // Xx  Yy  Zx  x
+  // Xy  Yx  Zy  y
+  // Xz  Yz  Zz  z 
   // m3  m7  m11 m15
   
   //////////////////////////////////////////////////////////////////  
@@ -126,6 +134,18 @@ update(const ros::Time& time, const ros::Duration& period)
   m_frankaState.O_T_EE[12] = m_current_frame.p.x();
   m_frankaState.O_T_EE[13] = m_current_frame.p.y();
   m_frankaState.O_T_EE[14] = m_current_frame.p.z();
+
+  m_frankaState.O_T_EE[0] = m_current_frame.M.Inverse().data[0];
+  m_frankaState.O_T_EE[1] = m_current_frame.M.Inverse().data[3];
+  m_frankaState.O_T_EE[2] = m_current_frame.M.Inverse().data[6];
+
+  m_frankaState.O_T_EE[4] = m_current_frame.M.Inverse().data[1];
+  m_frankaState.O_T_EE[5] = m_current_frame.M.Inverse().data[4];
+  m_frankaState.O_T_EE[6] = m_current_frame.M.Inverse().data[7];
+
+  m_frankaState.O_T_EE[8] = m_current_frame.M.Inverse().data[2];
+  m_frankaState.O_T_EE[9] = m_current_frame.M.Inverse().data[5];
+  m_frankaState.O_T_EE[10] = m_current_frame.M.Inverse().data[8];
 
   //////////////////////////////////////////////////////////////////  
   //  Update F_T_EE : End effector frame pose in flange frame.    //
@@ -249,6 +269,13 @@ targetFrameCallback(const geometry_msgs::PoseStamped& target)
         target.pose.position.x,
         target.pose.position.y,
         target.pose.position.z));
+}
+
+template <class HardwareInterface>
+void CartesianMotionController<HardwareInterface>::
+jointStatesCallback(const sensor_msgs::JointState& joint_states)
+{
+  m_jointStates_publisher.publish(joint_states);
 }
 
 } // namespace

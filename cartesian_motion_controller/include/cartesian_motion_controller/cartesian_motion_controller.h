@@ -46,6 +46,7 @@
 // ROS
 #include <kdl/frames.hpp>
 #include <geometry_msgs/PoseStamped.h>
+#include <sensor_msgs/JointState.h>
 
 namespace cartesian_motion_controller
 {
@@ -115,8 +116,11 @@ class CartesianMotionController : public virtual cartesian_controller_base::Cart
     std::string     m_ns;
 
     // Franka
+    void jointStatesCallback(const sensor_msgs::JointState& joint_states);
     franka_msgs::FrankaState m_frankaState;
     ros::Publisher m_frankaState_publisher;
+    ros::Publisher m_jointStates_publisher;
+    ros::Subscriber m_jointStates_subscriber;
 };
 
 }
