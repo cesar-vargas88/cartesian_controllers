@@ -47,6 +47,8 @@
 #include <kdl/frames.hpp>
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/JointState.h>
+#include "cartesian_motion_controller/SetEEFrame.h"
+#include "cartesian_motion_controller/SetKFrame.h"
 
 namespace cartesian_motion_controller
 {
@@ -117,10 +119,14 @@ class CartesianMotionController : public virtual cartesian_controller_base::Cart
 
     // Franka
     void jointStatesCallback(const sensor_msgs::JointState& joint_states);
+    bool set_EE_T_KCallback(cartesian_motion_controller::SetKFrame::Request& req, cartesian_motion_controller::SetKFrame::Response& res);
+    bool set_F_T_EECallback(cartesian_motion_controller::SetEEFrame::Request& req, cartesian_motion_controller::SetEEFrame::Response& res);
     franka_msgs::FrankaState m_frankaState;
     ros::Publisher m_frankaState_publisher;
     ros::Publisher m_jointStates_publisher;
     ros::Subscriber m_jointStates_subscriber;
+    ros::ServiceServer m_set_EE_T_K_server;
+    ros::ServiceServer m_set_F_T_EE_server;
 };
 
 }

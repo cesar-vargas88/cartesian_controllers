@@ -80,16 +80,12 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
       &CartesianMotionController<HardwareInterface>::targetFrameCallback,
       this);
 
-  // FrankaState Publisher 
+  // Franka
   m_frankaState_publisher = nh.advertise<franka_msgs::FrankaState>(m_ns + "/franka_state_controller/franka_states",10);
-  // jointState Publisher 
   m_jointStates_publisher = nh.advertise<sensor_msgs::JointState>(m_ns + "/franka_state_controller/joint_states",10);
-  // jointState Subscriber
-  m_jointStates_subscriber = nh.subscribe(
-      m_ns+"/joint_states",
-      3,
-      &CartesianMotionController<HardwareInterface>::jointStatesCallback,
-      this);
+  m_jointStates_subscriber = nh.subscribe(m_ns+"/joint_states", 10, &CartesianMotionController<HardwareInterface>::jointStatesCallback, this);
+  m_set_EE_T_K_server      = nh.advertiseService(m_ns + "/franka_hw/set_K_frame"   , &CartesianMotionController<HardwareInterface>::set_EE_T_KCallback,this);
+  m_set_F_T_EE_server      = nh.advertiseService(m_ns + "/franka_hw/set_EE_frame"   , &CartesianMotionController<HardwareInterface>::set_F_T_EECallback,this);
 
   return true;
 }
@@ -146,26 +142,6 @@ update(const ros::Time& time, const ros::Duration& period)
   m_frankaState.O_T_EE[8] = m_current_frame.M.Inverse().data[2];
   m_frankaState.O_T_EE[9] = m_current_frame.M.Inverse().data[5];
   m_frankaState.O_T_EE[10] = m_current_frame.M.Inverse().data[8];
-
-  //////////////////////////////////////////////////////////////////  
-  //  Update F_T_EE : End effector frame pose in flange frame.    //
-  //  Pose is represented as a 4x4 matrix in column-major format. //
-  //////////////////////////////////////////////////////////////////
-  
-  // update position
-  m_frankaState.F_T_EE[12] =  1.000;
-  m_frankaState.F_T_EE[13] =  2.000;
-  m_frankaState.F_T_EE[14] =  3.000;
-
-  //////////////////////////////////////////////////////////////////  
-  //  Update EE_T_K : Stiffness frame pose in end effector frame. //
-  //  Pose is represented as a 4x4 matrix in column-major format. //
-  //////////////////////////////////////////////////////////////////
-  
-  // update position
-  m_frankaState.EE_T_K[12] =  1.000;
-  m_frankaState.EE_T_K[13] =  2.000;
-  m_frankaState.EE_T_K[14] =  3.000;
 
   // frankaState publisher
   m_frankaState_publisher.publish(m_frankaState);
@@ -276,6 +252,40 @@ void CartesianMotionController<HardwareInterface>::
 jointStatesCallback(const sensor_msgs::JointState& joint_states)
 {
   m_jointStates_publisher.publish(joint_states);
+}
+
+template <class HardwareInterface>
+bool CartesianMotionController<HardwareInterface>::
+set_EE_T_KCallback(cartesian_motion_controller::SetKFrame::Request& req, cartesian_motion_controller::SetKFrame::Response& res)
+{
+  //////////////////////////////////////////////////////////////////  
+  //  Update F_T_EE : End effector frame pose in flange frame.    //
+  //  Pose is represented as a 4x4 matrix in column-major format. //
+  //////////////////////////////////////////////////////////////////
+
+  for (int i = 0 ; i < 16 ; i++)
+    m_frankaState.F_T_EE[i] = req.EE_T_K[i];
+
+  res.success = true;
+
+  return true;
+}
+
+template <class HardwareInterface>
+bool CartesianMotionController<HardwareInterface>::
+set_F_T_EECallback(cartesian_motion_controller::SetEEFrame::Request& req, cartesian_motion_controller::SetEEFrame::Response& res)
+{
+  //////////////////////////////////////////////////////////////////  
+  //  Update EE_T_K : Stiffness frame pose in end effector frame. //
+  //  Pose is represented as a 4x4 matrix in column-major format. //
+  //////////////////////////////////////////////////////////////////
+
+  for (int i = 0 ; i < 16 ; i++)
+    m_frankaState.EE_T_K[i] = req.F_T_EE[i];
+
+  res.success = true;
+
+  return true;
 }
 
 } // namespace
