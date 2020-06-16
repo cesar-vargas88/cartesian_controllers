@@ -43,7 +43,8 @@
   <build_depend>roscpp</build_depend>
   <build_depend>cartesian_controller_base</build_depend>
   <build_depend>geometry_msgs</build_depend>
-    <build_depend>std_msgs</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
 
   <run_depend>roscpp</run_depend>
   <run_depend>cartesian_controller_base</run_depend>
