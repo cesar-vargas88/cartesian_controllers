@@ -47,6 +47,8 @@
 #include <kdl/frames.hpp>
 #include <geometry_msgs/PoseStamped.h>
 
+#include <aescape_control/ArmGoal.h>
+
 namespace cartesian_motion_controller
 {
 

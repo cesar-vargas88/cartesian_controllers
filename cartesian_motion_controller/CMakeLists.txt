@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   cartesian_controller_base
   geometry_msgs
+  aescape_control
 )
 
 ## System dependencies are found with CMake's conventions
@@ -106,7 +107,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cartesian_motion_controller
-#  CATKIN_DEPENDS roscpp
+  CATKIN_DEPENDS roscpp aescape_control
 #  DEPENDS system_lib
 )
 
