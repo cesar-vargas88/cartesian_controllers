@@ -49,6 +49,7 @@
 #include <sensor_msgs/JointState.h>
 #include "cartesian_motion_controller/SetEEFrame.h"
 #include "cartesian_motion_controller/SetKFrame.h"
+#include <aescape_control/ArmGoal.h>
 
 namespace cartesian_motion_controller
 {

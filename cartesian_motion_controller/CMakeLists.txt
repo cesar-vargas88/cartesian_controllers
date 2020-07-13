@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   std_msgs
   message_generation
+  aescape_control
 )
 
 ## System dependencies are found with CMake's conventions
@@ -111,7 +112,7 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES cartesian_motion_controller
-#  CATKIN_DEPENDS roscpp
+  CATKIN_DEPENDS roscpp aescape_control
 #  DEPENDS system_lib
 )
 
