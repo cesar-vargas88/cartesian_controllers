@@ -110,7 +110,8 @@ class CartesianMotionController : public virtual cartesian_controller_base::Cart
     ctrl::Vector6D        computeMotionError();
 
   private:
-    void targetFrameCallback(const geometry_msgs::PoseStamped& pose);
+    //void targetFrameCallback(const geometry_msgs::PoseStamped& pose);
+    void targetFrameCallback(const aescape_control::ArmGoal& armGoal);
 
     ros::Subscriber m_target_frame_subscr;
     std::string     m_target_frame_topic;

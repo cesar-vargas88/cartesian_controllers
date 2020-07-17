@@ -225,7 +225,8 @@ computeMotionError()
 
 template <class HardwareInterface>
 void CartesianMotionController<HardwareInterface>::
-targetFrameCallback(const geometry_msgs::PoseStamped& target)
+//targetFrameCallback(const geometry_msgs::PoseStamped& target)
+targetFrameCallback(const aescape_control::ArmGoal& target)
 {
   if (target.header.frame_id != Base::m_robot_base_link)
   {
@@ -242,9 +243,9 @@ targetFrameCallback(const geometry_msgs::PoseStamped& target)
         target.pose.orientation.z,
         target.pose.orientation.w),
       KDL::Vector(
-        target.pose.position.x,
-        target.pose.position.y,
-        target.pose.position.z));
+        target.pose.position.x - target.EE_pose_K.position.x,
+        target.pose.position.y - target.EE_pose_K.position.y,
+        target.pose.position.z - target.EE_pose_K.position.z));
 }
 
 template <class HardwareInterface>
