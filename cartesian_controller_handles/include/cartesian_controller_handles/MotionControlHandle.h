@@ -56,6 +56,9 @@
 #include <kdl/chain.hpp>
 #include <kdl/chainfksolverpos_recursive.hpp>
 
+// Aescape
+#include <aescape_control/ArmGoal.h>
+
 namespace cartesian_controller_handles
 {
 
@@ -147,8 +150,7 @@ class MotionControlHandle : public controller_interface::Controller<HardwareInte
     geometry_msgs::PoseStamped getEndEffectorPose();
 
     // Handles to the joints
-    std::vector<
-      hardware_interface::JointStateHandle>   m_joint_handles;
+    std::vector<hardware_interface::JointStateHandle>   m_joint_handles;
     std::vector<std::string>  m_joint_names;
 
     // Kinematics
@@ -157,15 +159,14 @@ class MotionControlHandle : public controller_interface::Controller<HardwareInte
     std::string   m_target_frame_topic;
     std::string   m_ns;
 
-    boost::shared_ptr<
-      KDL::ChainFkSolverPos_recursive>  m_fk_solver;
+    boost::shared_ptr<KDL::ChainFkSolverPos_recursive>  m_fk_solver;
 
-    geometry_msgs::PoseStamped  m_current_pose;
+    //geometry_msgs::PoseStamped  m_current_pose;
+    aescape_control::ArmGoal m_current_pose;
     ros::Publisher  m_pose_publisher;
 
     // Interactive marker
-    boost::shared_ptr<
-      interactive_markers::InteractiveMarkerServer> m_server;
+    boost::shared_ptr<interactive_markers::InteractiveMarkerServer> m_server;
 
     visualization_msgs::InteractiveMarker           m_marker; //!< Controller handle for RViz
 

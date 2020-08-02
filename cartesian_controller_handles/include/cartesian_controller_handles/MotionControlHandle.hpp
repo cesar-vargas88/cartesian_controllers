@@ -67,16 +67,16 @@ template <class HardwareInterface>
 void MotionControlHandle<HardwareInterface>::
 starting(const ros::Time& time)
 {
-  m_current_pose = getEndEffectorPose();
+  ///m_current_pose = getEndEffectorPose();
 
   // Pose
   m_current_pose.pose.position.x = 0.350;
   m_current_pose.pose.position.y = 0;
   m_current_pose.pose.position.z = 0.600;
-  m_current_pose.pose.orientation.x =-0.707; 
+  m_current_pose.pose.orientation.x = 1.000; 
   m_current_pose.pose.orientation.y = 0.000; 
   m_current_pose.pose.orientation.z = 0.000; 
-  m_current_pose.pose.orientation.w = 0.707;
+  m_current_pose.pose.orientation.w = 0.000;
 
   m_server->setPose(m_marker.name,m_current_pose.pose);
   m_server->applyChanges();
@@ -140,7 +140,8 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
   }
 
   // Publishers
-  m_pose_publisher = nh.advertise<geometry_msgs::PoseStamped>(m_target_frame_topic,10);
+  //m_pose_publisher = nh.advertise<geometry_msgs::PoseStamped>(m_target_frame_topic,10);
+  m_pose_publisher = nh.advertise<aescape_control::ArmGoal>(m_target_frame_topic,10);
 
   // Build a kinematic chain of the robot
   if (!robot_model.initString(robot_description))
@@ -174,7 +175,9 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
 
   // Initialize kinematics
   m_fk_solver.reset(new KDL::ChainFkSolverPos_recursive(robot_chain));
-  m_current_pose = getEndEffectorPose();
+  //m_current_pose = getEndEffectorPose();
+  m_current_pose.header = getEndEffectorPose().header;
+  m_current_pose.pose = getEndEffectorPose().pose;
 
   // Configure the interactive marker for usage in RViz
   m_server.reset(new interactive_markers::InteractiveMarkerServer(

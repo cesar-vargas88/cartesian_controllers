@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   kdl_parser
   interactive_markers
   geometry_msgs
+  aescape_control
 )
 
 ## System dependencies are found with CMake's conventions
