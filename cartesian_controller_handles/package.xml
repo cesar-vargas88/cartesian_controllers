@@ -53,19 +53,22 @@
   <build_depend>geometry_msgs</build_depend>
   <build_depend>controller_interface</build_depend>
   <build_depend>kdl_parser</build_depend>
-  <build_depend>aescape_control</build_depend>
+  <!--<build_depend>aescape_control</build_depend>-->
+  <build_depend>aescape_gazebo</build_depend>
 
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>interactive_markers</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>controller_interface</build_export_depend>
-  <build_export_depend>aescape_control</build_export_depend>
+  <!--<build_export_depend>aescape_control</build_export_depend>-->
+  <build_export_depend>aescape_gazebo</build_export_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>interactive_markers</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>controller_interface</exec_depend>
-  <exec_depend>aescape_control</exec_depend>
+  <!--<exec_depend>aescape_control</exec_depend>-->
+  <exec_depend>aescape_gazebo</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

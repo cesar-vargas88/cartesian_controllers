@@ -226,7 +226,8 @@ computeMotionError()
 template <class HardwareInterface>
 void CartesianMotionController<HardwareInterface>::
 //targetFrameCallback(const geometry_msgs::PoseStamped& target)
-targetFrameCallback(const aescape_control::ArmGoal& target)
+//targetFrameCallback(const aescape_control::ArmGoal& target)
+targetFrameCallback(const aescape_gazebo::ArmGoal& target)
 {
   if (target.header.frame_id != Base::m_robot_base_link)
   {

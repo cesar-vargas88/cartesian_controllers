@@ -141,7 +141,8 @@ init(HardwareInterface* hw, ros::NodeHandle& nh)
 
   // Publishers
   //m_pose_publisher = nh.advertise<geometry_msgs::PoseStamped>(m_target_frame_topic,10);
-  m_pose_publisher = nh.advertise<aescape_control::ArmGoal>(m_target_frame_topic,10);
+  //m_pose_publisher = nh.advertise<aescape_control::ArmGoal>(m_target_frame_topic,10);
+  m_pose_publisher = nh.advertise<aescape_gazebo::ArmGoal>(m_target_frame_topic,10);
 
   // Build a kinematic chain of the robot
   if (!robot_model.initString(robot_description))

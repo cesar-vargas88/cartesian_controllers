@@ -49,7 +49,8 @@
 #include <sensor_msgs/JointState.h>
 #include "cartesian_motion_controller/SetEEFrame.h"
 #include "cartesian_motion_controller/SetKFrame.h"
-#include <aescape_control/ArmGoal.h>
+//#include <aescape_control/ArmGoal.h>
+#include <aescape_gazebo/ArmGoal.h>
 
 namespace cartesian_motion_controller
 {
@@ -111,7 +112,8 @@ class CartesianMotionController : public virtual cartesian_controller_base::Cart
 
   private:
     //void targetFrameCallback(const geometry_msgs::PoseStamped& pose);
-    void targetFrameCallback(const aescape_control::ArmGoal& armGoal);
+    //void targetFrameCallback(const aescape_control::ArmGoal& armGoal);
+    void targetFrameCallback(const aescape_gazebo::ArmGoal& armGoal);
 
     ros::Subscriber m_target_frame_subscr;
     std::string     m_target_frame_topic;

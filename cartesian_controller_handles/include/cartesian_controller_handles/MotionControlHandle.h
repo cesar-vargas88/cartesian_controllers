@@ -57,7 +57,8 @@
 #include <kdl/chainfksolverpos_recursive.hpp>
 
 // Aescape
-#include <aescape_control/ArmGoal.h>
+//#include <aescape_control/ArmGoal.h>
+#include <aescape_gazebo/ArmGoal.h>
 
 namespace cartesian_controller_handles
 {
@@ -162,7 +163,8 @@ class MotionControlHandle : public controller_interface::Controller<HardwareInte
     boost::shared_ptr<KDL::ChainFkSolverPos_recursive>  m_fk_solver;
 
     //geometry_msgs::PoseStamped  m_current_pose;
-    aescape_control::ArmGoal m_current_pose;
+    //aescape_control::ArmGoal m_current_pose;
+    aescape_gazebo::ArmGoal m_current_pose;
     ros::Publisher  m_pose_publisher;
 
     // Interactive marker
